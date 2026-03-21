@@ -107,8 +107,6 @@ class Card {
     }
 }
 
-// ========== ПЕРСОНАЖИ ==========
-
 class RacerCard extends Card {
     #speed;
     #stamina;
@@ -186,8 +184,6 @@ class SallyCarreraCard extends RacerCard {
     getClassName() { return "racer sally"; }
 }
 
-// ========== ЛОКАЦИИ ==========
-
 class LocationCard extends Card {
     #difficulty;
     #effect;
@@ -255,61 +251,59 @@ class ThunderGulchCard extends LocationCard {
     getClassName() { return "location thunder"; }
 }
 
-// ========== БАЗОВЫЙ НАБОР КАРТ ==========
-
 const STORAGE_KEY = "lab5_cars_deck";
 
 const baseCards = [
     new LightningMcQueenCard(
         "preset-mcqueen",
         "Молния Маккуин",
-        "Знаменитый гоночный автомобиль №95. Самый быстрый на трассе, но иногда бывает слишком самоуверенным.",
+        "1 победитель, 42 лузера",
         10,
         8,
-        "Kachow! При финише +2 к скорости",
-        "./img/kchay.jpg"
+        "Кчау! При финише +2 к скорости",
+        "./img/mc.jpg"
     ),
     new MaterCard(
         "preset-mater",
         "Метр",
-        "Лучший друг Маккуина. Старый эвакуатор, который знает всё о Радиатор-Спрингс.",
+        "Лучший друг Маккуина. Туповат, но милашка",
         5,
         9,
-        "Бесплатная мойка! Восстанавливает 3 выносливости после гонки",
-        "img/metr.jpg"
+        "Восстанавливает 3 выносливости после гонки",
+        "./img/mtr.jpg"
     ),
     new SallyCarreraCard(
         "preset-sally",
         "Салли Каррера",
-        "Красивый синий Порше, адвокат и хозяйка мотеля. Любит извилистые дороги.",
+        "Хозяйка мотеля. Любит извилистые дороги.",
         7,
         7,
         "Плавный ход: +2 к маневренности на извилистых трассах",
-        "img/sally.jpg"
+        "./img/sally.jpg"
     ),
     new RadiatorSpringsCard(
         "preset-radiator",
         "Радиатор-Спрингс",
-        "Уютный городок на трассе 66. Здесь всё начиналось для Маккуина.",
+        "Уютный городок на трассе 66. Здесь всё начиналось.",
         2,
         "Все гонщики восстанавливают 2 выносливости",
-        "https://static.wikia.nocookie.net/pixar/images/2/2d/Radiator_Springs.png"
+        "./img/radiator.jpg"
     ),
     new RainbowBridgeCard(
         "preset-rainbow",
         "Радужный мост",
-        "Живописный мост с потрясающим видом. Вдохновляет гонщиков на подвиги.",
+        "Живописный мост с потрясающим видом.",
         3,
         "Гонщики получают +1 к скорости на этой трассе",
-        ""
+        "./img/rainbow.jpg"
     ),
     new ThunderGulchCard(
         "preset-thunder",
         "Овраг Грома",
-        "Опасное место с крутыми поворотами и грязью. Только для смелых гонщиков.",
+        "Опасное место с крутыми поворотами и грязью.",
         5,
         "Скорость -1, но победитель получает двойную награду",
-        ""
+        "./img/grom.jpg"
     )
 ];
 
@@ -318,8 +312,6 @@ let state = {
     presetCards: [],
     customCards: []
 };
-
-// ========== ОСНОВНЫЕ ФУНКЦИИ ==========
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -414,7 +406,7 @@ function buildHeader() {
     header.innerHTML = `
         <div class="header-inner">
             <div class="brand">
-                <h1>🏁 Колода карт Тачки 🚗</h1>
+                <h1>Колода карт Тачки 🚗</h1>
             </div>
             <div class="header-actions"></div>
         </div>
@@ -427,9 +419,22 @@ function buildHeader() {
         state.editMode ? "button danger" : "button primary",
         toggleEditMode
     );
+    
+    const resetBtn = button(
+        "🔄 Сбросить всё",
+        "button warning",
+        resetToDefault
+    );
 
-    actions.append(editBtn);
+    actions.append(editBtn, resetBtn);
     return header;
+}
+
+function resetToDefault() {
+    if (confirm("Сбросить все карты к базовому набору? Все пользовательские карты будут удалены!")) {
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
+    }
 }
 
 function buildContent() {
@@ -681,8 +686,6 @@ function extraFields(card) {
         textareaField(`extra-b-${card.id}`, "Эффект", card.effect, true)
     ];
 }
-
-// ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
 
 function field(id, labelText, value = "", filled = false) {
     const div = document.createElement("div");
